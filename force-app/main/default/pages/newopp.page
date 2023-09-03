@@ -1,0 +1,31 @@
+<apex:page controller="NewOpportunityController">
+    <apex:form>
+        <apex:pageBlock title="Select an Account">
+            <apex:pageBlockSection>
+                <apex:selectList value="{!selectedAccountId}" size="1">
+                    <apex:selectOptions value="{!accountOptions}" />
+                    <apex:actionSupport event="onchange" action="{!loadOpportunities}" reRender="opportunityList, paginationPanel" />
+                </apex:selectList>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        
+        <apex:outputPanel id="opportunityList">
+            <apex:pageBlock title="Opportunities">
+                <apex:dataTable value="{!pagedOpportunities}" var="opp" rows="10">
+                    <apex:column value="{!opp.Name}" />
+                    <apex:column value="{!opp.StageName}" />
+                    <apex:column value="{!opp.CloseDate}" />
+                </apex:dataTable>
+            </apex:pageBlock>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="paginationPanel">
+            <apex:pageBlock rendered="{!totalPages > 1}">
+                <apex:panelGrid columns="2">
+                    <apex:commandLink action="{!previousPage}" rendered="{!hasPrevious}" value="Previous" />
+                    <apex:commandLink action="{!nextPage}" rendered="{!hasNext}" value="Next" />
+                </apex:panelGrid>
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

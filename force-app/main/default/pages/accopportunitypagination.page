@@ -1,0 +1,20 @@
+<apex:page controller="AccConPicklistC">
+    <apex:form>
+        <apex:pageMessages/>
+        <apex:pageBlock title="Account Name">
+            Account Names&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:selectList value="{!selectedAccId}" size="1">
+                <apex:selectOptions value="{!AccountNames}" />
+                <apex:actionSupport event="onchange" />
+            </apex:selectList>
+
+            <br/>
+            <apex:pageBlockTable value="{!selectedOppId}" var="opp" >
+            <apex:column value="{! opp.Name }" />
+            <apex:column value="{! opp.StageName }" />
+            <apex:column value="{! opp.CloseDate }" />
+            <apex:column value="{! opp.OwnerId }" />
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>
