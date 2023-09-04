@@ -4,7 +4,6 @@ trigger tasktwo on Opportunity (after update) {
     for (Opportunity updatedOpportunity : Trigger.new) {
         Opportunity oldOpportunity = Trigger.oldMap.get(updatedOpportunity.Id);
 
-        // Check if the Opportunity's name has been modified
         if (oldOpportunity.Name != updatedOpportunity.Name) {
             Task newTask = new Task();
             newTask.Subject = 'Opportunity Name Update';

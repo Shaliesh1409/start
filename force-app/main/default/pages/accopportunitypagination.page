@@ -9,7 +9,7 @@
             </apex:selectList>
 
             <br/>
-            <apex:pageBlockTable value="{!selectedOppId}" var="opp" >
+            <apex:pageBlockTable value="{!OpportunityNames}" var="opp" >
             <apex:column value="{! opp.Name }" />
             <apex:column value="{! opp.StageName }" />
             <apex:column value="{! opp.CloseDate }" />

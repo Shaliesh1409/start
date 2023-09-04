@@ -1,7 +1,6 @@
 public class AccConPicklistC {
     
     public String selectedAccId{get;set;}
-    public String selectedConId{get;set;}
     public String selectedOppId{get;set;}
     
     public List<SelectOption> getAccountNames() {
@@ -25,10 +24,6 @@ public class AccConPicklistC {
             }
             System.debug('oppOptions--> ' + oppOptions);
         }                  
-        else
-        {
-            oppOptions.add( new SelectOption('--None--','--None--'));
-        }
         return oppOptions;
     }
 }
