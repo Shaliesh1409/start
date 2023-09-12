@@ -17,7 +17,7 @@ trigger sheep on Contact (after update) {
         }
     }
     
-    String newaccname = [SELECT Id, Name FROM Account WHERE Id =: newacid ].Name;
+    // String newaccname = [SELECT Id, Name FROM Account WHERE Id =: newacid ].Name;
 
     System.debug('oldaccountId-->'+oldaccountId);
     	
@@ -30,8 +30,9 @@ trigger sheep on Contact (after update) {
     for ( Contact updateconaccid : relatedcontacts )
     if(updateconaccid.AccountId != null){
     {
-        updateconaccid.LastName = newaccname;
-        System.debug('updateconaccid.LastName'+updateconaccid.LastName);
+
+        updateconaccid.AccountId = newacid;
+        // System.debug('updateconaccid.LastName'+updateconaccid.LastName);
         contactstoupdate.add(updateconaccid);
         System.debug('contactstoupdate'+contactstoupdate);
     }
