@@ -1,25 +1,9 @@
-<apex:page  controller="OpportunityAttachmentService" action="{!attachRandomImageToOpportunity}">
-    <script>
-        function addRandomImage() {
-            Visualforce.remoting.Manager.invokeAction(
-                '{!$RemoteAction.OpportunityAttachmentService.attachRandomImageToOpportunity}',
-                '{!Opportunity.Id}',
-                function(result, event) {
-                    // Handle the response if needed
-                    if (event.status) {
-                        // Display a success message or perform other actions
-                        alert('Image added successfully.');
-                    } else {
-                        // Handle errors
-                        alert('Error: ' + event.message);
-                    }
-                },
-                {escape: true}
-            );
-        }
-    </script>
-    <!-- Button to trigger the action -->
+<apex:page standardController="Opportunity" extensions="OpportunityAttachmentService" >
     <apex:form>
-        <apex:commandButton value="Add Random File (Image)" onclick="addRandomImage(); return false;"/>
+        <apex:pageMessages />
+        <apex:outputText value="Opportunity Id: {!Opportunity.Id}" />
+        <apex:commandButton value="Add Random Image" action="{!passid}">
+            <apex:param name="opportunityIds" value="{!Opportunity.Id}" assignTo="{!opportunityIds}" />
+        </apex:commandButton>
     </apex:form>
 </apex:page>

@@ -1,10 +1,20 @@
 public class OpportunityAttachmentService {
+
+    public String opportunityIds; 
+
+    public OpportunityAttachmentService(ApexPages.StandardController controller){
+        opportunityIds =  System.currentPageReference().getParameters().get( 'id' );
+        System.debug(opportunityIds + 'Opp Id');
+    }
     private static final String UNSPLASH_API_KEY = '10OOwuwbqJNgRj_BpRqDw7fvtOlz0hRkKHJgqF3RfGY';
 
     @future(callout=true)
-    public static void attachRandomImageToOpportunity(Id opportunityId) {
+    public static void attachRandomImageToOpportunity(String opportunityId) {              //Id opportunityId
         try {
-            
+            // Id opportunityId = '0065j00001PLy0LAAT' ;
+           
+
+            System.debug('opportunityId-->' + opportunityId);
             String endpoint = 'https://api.unsplash.com/photos/random?client_id=' + UNSPLASH_API_KEY;
     
             HttpRequest request = new HttpRequest();
@@ -30,13 +40,7 @@ public class OpportunityAttachmentService {
                  System.debug('url--> ' +url);
     
                 //Create an Attachment record and associate it with the Opportunity
-                //  Attachment attachment = new Attachment();
-                //  attachment.ParentId = opportunityId;
-                //  attachment.Name = 'UnsplashImage.jpg';
-                //  attachment.Body = Blob.valueOf(url);
-                //  attachment.ContentType = 'image/jpeg';
-                //  insert attachment;
-                //  System.debug('image added successfully');
+                
                 HttpRequest request2 = new HttpRequest();
                 request2.setEndpoint(url);
                 request2.setMethod('GET');
@@ -45,11 +49,26 @@ public class OpportunityAttachmentService {
                 System.debug('Endpoint 2 : ' + url);
                 System.debug('Response Body 2 : ' + response2.getBody());
                 System.debug(response2.getStatusCode());
+
+                 Attachment attachment = new Attachment();
+                 attachment.ParentId = opportunityId;
+                 attachment.Name = 'UnsplashImage.jpg';
+                 attachment.Body = response2.getBodyAsBlob();
+                 attachment.ContentType = 'image/jpeg';
+                 insert attachment;
+                 System.debug('image added successfully');
             } else {
                 System.debug('Error: Unable to fetch an image from Unsplash API. Status code: ' + response.getStatusCode());
             }
         } catch (Exception e) {
             System.debug(e);
         }
+    }
+
+    public void passid(){
+        System.debug('passID');
+        System.debug(opportunityIds);
+        OpportunityAttachmentService.attachRandomImageToOpportunity(opportunityIds);
+        // return null;
     }
 }

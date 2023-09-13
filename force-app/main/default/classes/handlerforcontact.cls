@@ -43,8 +43,8 @@ public class handlerforcontact {
     }
     
     public void AfterDeleteEvent(){
-        Deleteaccounts();
-        UpdateTotalAmountOnContact();
+       // Deleteaccounts();
+        // UpdateTotalAmountOnContact();
     }
     
     public void AfterUndeleteEvent(){}
@@ -65,39 +65,46 @@ public class handlerforcontact {
         }
     }
 
-    public void Deleteaccounts() {
-        List<Id> accountIds = new List<Id>();
-        for(Contact c : recordOldList){
-            accountIds.add(c.AccountId);
-        }
-        List<Account> accdelete = [SELECT Id FROM Account WHERE Id IN :accountIds];
-        if(!accdelete.isEmpty()) {
-            delete accdelete;
-        }
-    }
-
-
-    // public void DeleteAccounts() {
-    //     Set<Id> accountIds = new Set<Id>();
-    
-    //     // Collect the AccountIds from the related Contacts
-    //     for (Contact c : recordOldList) {
+    // public void Deleteaccounts() {
+    //     List<Id> accountIds = new List<Id>();
+    //     for(Contact c : recordOldList){
     //         accountIds.add(c.AccountId);
     //     }
-    
-    //     // Delete the related Account records
-    //     if (!accountIds.isEmpty()) {
-    //         List<Account> accToDelete = new List<Account>();
-            
-    //         // Create Account records with only Ids to delete
-    //         for (Id accId : accountIds) {
-    //             accToDelete.add(new Account(Id = accId));
-    //         }
-            
-    //         // Delete the Account records
-    //         delete accToDelete;
+    //     List<Account> accdelete = [SELECT Id FROM Account WHERE Id IN :accountIds];
+    //     if(!accdelete.isEmpty()) {
+    //         delete accdelete;
     //     }
     // }
+
+
+    public void DeleteAccounts() {
+        try{
+                    Set<Id> accountIds = new Set<Id>();
+    
+        // Collect the AccountIds from the related Contacts
+        for (Contact c : recordOldList) {
+            System.debug('contact account id-->' +c.AccountId);
+            if (c.AccountId != null){
+            accountIds.add(c.AccountId);
+            }
+        }
+    
+        // Delete the related Account records
+        if (!accountIds.isEmpty()) { 
+            List<Account> accToDelete = new List<Account>();
+            
+            for (Id accId : accountIds) {
+                accToDelete.add(new Account(Id = accId));
+            }
+            
+            if(!acctodelete.isEmpty()){
+                delete accToDelete;
+            }
+        }
+        }catch(Exception e){
+            System.debug('Error creating Error Log: ' + e.getMessage());
+        }
+    }
     
 
     public void UpdateTotalAmountOnContact() {
@@ -117,26 +124,73 @@ public class handlerforcontact {
 
 
         // Added by Nimit
-    //     if(isInsert){
-    //         Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
-    //         List<Account> acclist = new List<Account>();
-    //         for (Contact con : recordNewList) {
-    //             if(con.AccountId != null){
-    //                 Account acc = mapofacc.get(con.AccountId);
-    //                 if(acc.Total_Amount__c != null){
-    //                     acc.Total_Amount__c += con.Amount__c;
-    //                 } else {
-    //                     acc.Total_Amount__c = 0;
-    //                     acc.Total_Amount__c += con.Amount__c;
-    //                 }
-    //                 acclist.add(acc);
-    //             }
-    //         }
-    //         update acclist;
-    //     }
+        if(isInsert){
+            Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
+            List<Account> acclist = new List<Account>();
+            for (Contact con : recordNewList) {
+                if(con.AccountId != null){
+                    Account acc = mapofacc.get(con.AccountId);
+                    if(acc.Total_Amount__c != null){
+                        acc.Total_Amount__c += con.Amount__c;
+                    } else {
+                        acc.Total_Amount__c = 0;
+                        acc.Total_Amount__c += con.Amount__c;
+                    }
+                    acclist.add(acc);
+                }
+            }
+            update acclist;
+        }
     //     // added by shailesh
 
-    //     else if (Trigger.isUpdate) {
+    else if (Trigger.isUpdate) {
+        Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
+                for (Contact newCon : recordNewList) {
+                    Contact oldCon = recordOldMap.get(newCon.Id);
+    
+                    if ( newCon.Amount__c != oldCon.Amount__c) {
+                        if (newCon.AccountId != null) {        
+                            Account acc = mapOfAcc.get(newCon.AccountId);
+        
+                            if (acc.Total_Amount__c != null) {
+                                acc.Total_Amount__c += newCon.Amount__c - oldCon.Amount__c;
+                            } else {
+                                acc.Total_Amount__c = 0;
+                                acc.Total_Amount__c += newCon.Amount__c - oldCon.Amount__c;
+                            }
+                            
+                        }
+        
+                    }
+                }
+        
+                if (!mapOfAcc.isEmpty()) {
+                    update mapOfAcc.values();
+                }
+            }
+        
+      else if(Trigger.isDelete){
+        System.debug('delete');
+        Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
+             for (Contact oldCon : recordOldList) {
+                if (oldCon.AccountId != null) {
+                    Account acc = mapOfAcc.get(oldCon.AccountId);
+
+                    if (acc.Total_Amount__c != null) {
+                        acc.Total_Amount__c -= oldCon.Amount__c;
+                    } else {
+                        acc.Total_Amount__c = 0;
+                    }
+                }
+            }
+            if (!mapOfAcc.isEmpty()) {
+                update mapOfAcc.values();
+            }
+    }
+}
+
+
+    //      if (Trigger.isUpdate) {
     //         // Logic for update operation
     //         for (Contact newCon : Trigger.new) {
     //             Contact oldCon = Trigger.oldMap.get(newCon.Id);
@@ -172,28 +226,28 @@ public class handlerforcontact {
     // added by shailesh
         // Added by Nimit
     
-        List<Account> accountsToUpdate = new List<Account>();
-        for (Id accountId : accountIdsToUpdate) {
-            List<Contact> relatedContacts = [
-                SELECT Amount__c
-                FROM Contact
-                WHERE AccountId = :accountId
-            ];
+    //     List<Account> accountsToUpdate = new List<Account>();
+    //     for (Id accountId : accountIdsToUpdate) {
+    //         List<Contact> relatedContacts = [
+    //             SELECT Amount__c
+    //             FROM Contact
+    //             WHERE AccountId = :accountId
+    //         ];
     
-            Decimal totalAmount = 0;
-            for (Contact contact : relatedContacts) {
-                if (contact.Amount__c != null) {
-                    totalAmount += contact.Amount__c;
-                }
-            }
+    //         Decimal totalAmount = 0;
+    //         for (Contact contact : relatedContacts) {
+    //             if (contact.Amount__c != null) {
+    //                 totalAmount += contact.Amount__c;
+    //             }
+    //         }
     
-            accountsToUpdate.add(new Account(Id = accountId, Total_Amount__c = totalAmount));
-        }
+    //         accountsToUpdate.add(new Account(Id = accountId, Total_Amount__c = totalAmount));
+    //     }
     
-        if (!accountsToUpdate.isEmpty()) {
-            update accountsToUpdate;
-        }
-    }
+    //     if (!accountsToUpdate.isEmpty()) {
+    //         update accountsToUpdate;
+    //     }
+    // }
 
 
   // SHEEP PROBLEM 
