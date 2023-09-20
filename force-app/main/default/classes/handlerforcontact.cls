@@ -27,7 +27,9 @@ public class handlerforcontact {
     }
     
     public void BeforeDeleteEvent(){
+        System.debug('*****BeforeDeleteEvent*****');
         GreatProblem2Logic();
+        //UpdateTotalAmountOnContact();
     }
     
     public void AfterInsertEvent(){
@@ -43,8 +45,8 @@ public class handlerforcontact {
     }
     
     public void AfterDeleteEvent(){
-       // Deleteaccounts();
-        // UpdateTotalAmountOnContact();
+       Deleteaccounts();
+    //    UpdateTotalAmountOnContact();
     }
     
     public void AfterUndeleteEvent(){}
@@ -108,6 +110,7 @@ public class handlerforcontact {
     
 
     public void UpdateTotalAmountOnContact() {
+        System.debug('*****UpdateTotalAmountOnContact*****');
         Set<Id> accountIdsToUpdate = new Set<Id>();
     
         if (isInsert || isUpdate) {
@@ -140,11 +143,8 @@ public class handlerforcontact {
                 }
             }
             update acclist;
-        }
-    //     // added by shailesh
-
-    else if (Trigger.isUpdate) {
-        Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
+        } else if (isUpdate) {
+            Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
                 for (Contact newCon : recordNewList) {
                     Contact oldCon = recordOldMap.get(newCon.Id);
     
@@ -167,27 +167,26 @@ public class handlerforcontact {
                 if (!mapOfAcc.isEmpty()) {
                     update mapOfAcc.values();
                 }
-            }
-        
-      else if(Trigger.isDelete){
-        System.debug('delete');
-        Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
-             for (Contact oldCon : recordOldList) {
-                if (oldCon.AccountId != null) {
-                    Account acc = mapOfAcc.get(oldCon.AccountId);
+            } else if(isDelete){
+                System.debug('delete Shailesh');
+                System.debug('delete');
+                Map<Id , Account> mapofacc = new Map<Id, Account>([ SELECT Id,Total_Amount__c FROM Account WHERE Id IN: accountIdsToUpdate ]);
+                    for (Contact oldCon : recordOldList) {
+                        if (oldCon.AccountId != null) {
+                            Account acc = mapOfAcc.get(oldCon.AccountId);
 
-                    if (acc.Total_Amount__c != null) {
-                        acc.Total_Amount__c -= oldCon.Amount__c;
-                    } else {
-                        acc.Total_Amount__c = 0;
+                            if (acc.Total_Amount__c != null) {
+                                acc.Total_Amount__c -= oldCon.Amount__c;
+                            } else {
+                                acc.Total_Amount__c = 0;
+                            }
+                        }
                     }
-                }
+                    if (!mapOfAcc.isEmpty()) {
+                        update mapOfAcc.values();
+                    }
             }
-            if (!mapOfAcc.isEmpty()) {
-                update mapOfAcc.values();
-            }
-    }
-}
+        }
 
 
     //      if (Trigger.isUpdate) {
@@ -293,6 +292,10 @@ public class handlerforcontact {
         // THE GREAT PROBLEM 
 
         public void GreatProblem2Logic() {
+            System.debug('***GreatProblem2Logic***');
+            try {
+                
+            
             Map<Id, Decimal> accountMaxAmounts = new Map<Id, Decimal>();
         
             if (Trigger.isBefore) {
@@ -330,12 +333,16 @@ public class handlerforcontact {
                 if (!contactsToUpdate.isEmpty()) {
                     insert contactsToUpdate;
                 }
+            
             }
         
             if (isDelete) {
                 List<Contact> contactsToDelete = [SELECT Id FROM Contact WHERE AccountId IN :accountMaxAmounts.keySet()];
                 delete contactsToDelete;
             }
+        } catch (Exception e) {
+            System.debug('Error-->'+e.getMessage() +'----' +e.getLineNumber());
+        }
         }
         
 

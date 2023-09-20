@@ -39,13 +39,13 @@ public class handlerforopportunity {
     
     public void AfterUndeleteEvent(){}
 
-    public void stage() {
+    public  void stage() {
         for (Opportunity opp : recordNewList) {
             // Trigger 1 logic
             opp.StageName = 'Prospecting';
             opp.CloseDate = Date.today().addDays(15);
             opp.Type = 'New Customer';
-
+             
         }
     }
 

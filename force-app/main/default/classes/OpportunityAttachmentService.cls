@@ -50,18 +50,27 @@ public class OpportunityAttachmentService {
                 System.debug('Response Body 2 : ' + response2.getBody());
                 System.debug(response2.getStatusCode());
 
-                 Attachment attachment = new Attachment();
-                 attachment.ParentId = opportunityId;
-                 attachment.Name = 'UnsplashImage.jpg';
-                 attachment.Body = response2.getBodyAsBlob();
-                 attachment.ContentType = 'image/jpeg';
-                 insert attachment;
+
+                ContentVersion contentVersion = new ContentVersion();
+                contentVersion.VersionData = response2.getBodyAsBlob();
+                contentVersion.Title = 'UnsplashImage.jpg';
+                contentVersion.PathOnClient = 'UnsplashImage.jpg';
+                contentVersion.FirstPublishLocationId = opportunityId;
+
+                insert contentVersion;
+
+                //  Attachment attachment = new Attachment();
+                //  attachment.ParentId = opportunityId;
+                //  attachment.Name = 'UnsplashImage.jpg';
+                //  attachment.Body = response2.getBodyAsBlob();
+                //  attachment.ContentType = 'image/jpeg';
+                //  insert attachment;
                  System.debug('image added successfully');
             } else {
                 System.debug('Error: Unable to fetch an image from Unsplash API. Status code: ' + response.getStatusCode());
             }
         } catch (Exception e) {
-            System.debug(e);
+            System.debug(e);   
         }
     }
 

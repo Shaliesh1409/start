@@ -17,7 +17,7 @@ trigger triggerforcontact on Contact (before insert, before update, before delet
         }else if(trigger.isUpdate){
             handler.BeforeUpdateEvent();
         }else if(trigger.isDelete){
-           // handler.BeforeDeleteEvent();
+        //    handler.BeforeDeleteEvent();
         }
     }
 }
