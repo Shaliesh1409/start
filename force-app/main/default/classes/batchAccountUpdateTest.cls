@@ -4,8 +4,7 @@ public class batchAccountUpdateTest{
     static void setupTestData() {
         Account testAccount = new Account(Name = 'Test Account', Description = 'initial description',Rating = 'Hot');
         insert testAccount;
-
-        Opportunity testOpportunity = new Opportunity(
+            Opportunity testOpportunity = new Opportunity(
             Name = 'Opportunity Name',
             StageName = 'Prospecting',
             CloseDate = Date.today(),

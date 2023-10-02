@@ -1,0 +1,62 @@
+<aura:component controller="WizardController">
+    <aura:attribute name="currentStep" type="String" default="step1" />
+    <aura:attribute name="progress" type="Integer" default="1" />
+    <aura:attribute name="accountData" type="Object" default="{'Name': '', 'Industry': ''}" />
+    <aura:attribute name="contactData" type="Object" default="{'FirstName': '', 'LastName': '', 'Email': ''}" />
+
+    <aura:if isTrue="{!v.currentStep == 'step1'}">
+        <!-- Step 1: Insert Account -->
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="accountName">Account Name</label>
+            <div class="slds-form-element__control">
+                <input type="text" id="accountName" class="slds-input" value="{!v.accountData.Name}" />
+            </div>
+        </div>
+        
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="industry">Industry</label>
+            <div class="slds-form-element__control">
+                <input type="text" id="industry" class="slds-input" value="{!v.accountData.Industry}" />
+            </div>
+        </div>
+        
+        <button class="slds-button slds-button_brand" onclick="{!c.createAccount}">Next</button>
+    </aura:if>
+
+    <aura:if isTrue="{!v.currentStep == 'step2'}">
+        <!-- Step 2: Contact Form -->
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="firstName">First Name</label>
+            <div class="slds-form-element__control">
+                <input type="text" id="firstName" class="slds-input" value="{!v.contactData.FirstName}" />
+            </div>
+        </div>
+        
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="lastName">Last Name</label>
+            <div class="slds-form-element__control">
+                <input type="text" id="lastName" class="slds-input" value="{!v.contactData.LastName}" />
+            </div>
+        </div>
+
+        <div class="slds-form-element">
+            <label class="slds-form-element__label" for="email">Email</label>
+            <div class="slds-form-element__control">
+                <input type="email" id="email" class="slds-input" value="{!v.contactData.Email}" />
+            </div>
+        </div>
+        
+        <button class="slds-button slds-button_brand" onclick="{!c.previousStep}">Previous</button>
+    </aura:if>
+    
+    <!-- Progress Bar -->
+    <div class="slds-progress-bar">
+        <div class="slds-progress-bar__item slds-is-active" style="width: {!v.progress * 50}%"></div>
+    </div>
+    
+    <!-- Next and Previous Buttons -->
+    <div class="slds-m-top_medium">
+        <button class="slds-button slds-button_brand" onclick="{!c.previousStep}" disabled="{!v.progress == 1 && v.currentStep == 'step1'}">Previous</button>
+        <button class="slds-button slds-button_brand" onclick="{!c.nextStep}" disabled="{!v.progress == 2 && v.currentStep == 'step2'}">Next</button>
+    </div>
+</aura:component>

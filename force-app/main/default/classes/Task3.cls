@@ -21,6 +21,33 @@
         return contactcount;
        
     }
+
+    // @AuraEnabled
+    // public static void updateContactParentAccount(String contactId, String newAccountName) {
+    //     try {
+    //         // Query the Contact record to get the current parent Account Id
+    //         Contact contactToUpdate = [SELECT Id, AccountId FROM Contact WHERE Id = :contactId LIMIT 1];
+
+    //         if (contactToUpdate != null) {
+    //             // Query the new parent Account based on the provided Account Name
+    //             Account newAccount = [SELECT Id FROM Account WHERE Name = :newAccountName LIMIT 1];
+
+    //             if (newAccount != null) {
+    //                 // Update the Contact's AccountId to the new parent Account's Id
+    //                 contactToUpdate.AccountId = newAccount.Id;
+
+    //                 // Update the Contact
+    //                 update contactToUpdate;
+    //             }
+    //         }
+    //     } catch (Exception e) {
+    //         // Handle any exceptions that occur during the update
+    //         // You can log the error or throw a custom exception if needed
+    //         throw new AuraHandledException('Error updating contact\'s parent account: ' + e.getMessage());
+    //     }
+    // }
 }
+
+
     
 

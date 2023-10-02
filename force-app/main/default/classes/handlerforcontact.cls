@@ -90,7 +90,7 @@ public class handlerforcontact {
             accountIds.add(c.AccountId);
             }
         }
-    
+    /
         // Delete the related Account records
         if (!accountIds.isEmpty()) { 
             List<Account> accToDelete = new List<Account>();

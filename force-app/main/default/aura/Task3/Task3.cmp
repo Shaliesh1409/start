@@ -3,6 +3,8 @@
     <aura:attribute name="contacts1" type="List" />
     <aura:attribute name="accountName2" type="String" />
     <aura:attribute name="contacts2" type="List" />
+    <aura:attribute name="contactCount1" type="Integer" />
+    <aura:attribute name="contactCount2" type="Integer" />
 
     <div class="slds-grid">
         <div class="slds-col">
@@ -21,9 +23,9 @@
                 </tr>
             </thead>
             <tbody>
-                <aura:iteration items="{!v.contacts1}" var="contact">
-                    <tr>
-                        <td>{!contact.Name}</td>
+                <aura:iteration items="{!v.contacts1}" var="contact" >
+                    <tr ondragover="{!c.allowDrop}" ondrop="{!c.onDrop}">
+                        <td draggable="true" ondragstart="{!c.onDragStart}" data-contact-id="{!contact.Id}" data-source-section="1">{!contact.Name}</td>
                     </tr>
                 </aura:iteration>
 
@@ -38,7 +40,7 @@
         <lightning:input type="text" id="accountName2" value="{!v.accountName2}" />
         <lightning:button label="Search" onclick="{!c.search2}" />
         <div class="slds-p-top_small">
-            <p>Number of Contacts: {!v.contactCount1}</p>
+            <p>Number of Contacts: {!v.contactCount2}</p>
         </div>
 
         <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer">
@@ -49,8 +51,8 @@
             </thead>
             <tbody>
                 <aura:iteration items="{!v.contacts2}" var="contact">
-                    <tr>
-                        <td>{!contact.Name}</td>
+                    <tr ondragover="{!c.allowDrop}" ondrop="{!c.onDrop}">
+                        <td draggable="true" ondragstart="{!c.onDragStart}" data-contact-id="{!contact.Id}" data-source-section="2">{!contact.Name}</td>
                     </tr>
                 </aura:iteration>
 

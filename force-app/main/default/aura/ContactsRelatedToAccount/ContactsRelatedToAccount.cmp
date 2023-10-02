@@ -6,6 +6,8 @@
     <aura:attribute name="totalPages" type="Integer" />
     <aura:attribute name="searchTerm" type="String" />
 
+    <div class="slds-p-around_medium">
+        <lightning:input label="search ">
 
 
 
